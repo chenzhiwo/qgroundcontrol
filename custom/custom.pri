@@ -13,4 +13,4 @@ HEADERS += \
     $$PWD/CustomPlugin.h
 
 SOURCES += \
-    $$PWD/CustomPlugin.cpp
+    $$PWD/CustomPlugin.cc
