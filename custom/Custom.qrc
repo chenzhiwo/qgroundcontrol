@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/MapMarkerView.qml</file>
+        <file>images/marker.png</file>
+        <file>qml/MapMarkerToolView.qml</file>
+        <file>images/menu.png</file>
+        <file>qml/MapMarkerPopup.qml</file>
+        <file>qml/MapCoordinatePicker.qml</file>
+    </qresource>
+</RCC>
