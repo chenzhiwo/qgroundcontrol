@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtPositioning 5.8
+import QtMultimedia 5.9
 
 import QGroundControl 1.0
 import QGroundControl.Controls 1.0
@@ -51,20 +52,25 @@ Item {
         Item {
             anchors.fill: parent
 
+            Video {
+                id: video
+                anchors.fill: parent
+                source: "rtsp://127.0.0.1:8554/"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        video.play()
+                    }
+                }
+            }
+
             ColumnLayout {
                 id: rowLayout
                 anchors.top: parent.top
                 anchors.right: parent.right
                 spacing: ScreenTools.defaultFontPixelWidth
-
-                QGCButton {
-                    text: qsTr("Close")
-                    Layout.fillWidth: true
-
-                    onClicked: {
-                        popup.close()
-                    }
-                }
 
                 QGCButton {
                     text: qsTr("Add")
@@ -88,6 +94,15 @@ Item {
                         popup.close()
                         mainWindow.showPlanView()
                         markerManager.plan()
+                    }
+                }
+
+                QGCButton {
+                    text: qsTr("Close")
+                    Layout.fillWidth: true
+
+                    onClicked: {
+                        popup.close()
                     }
                 }
             }

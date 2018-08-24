@@ -6,5 +6,6 @@
         <file>images/menu.png</file>
         <file>qml/MapMarkerPopup.qml</file>
         <file>qml/MapCoordinatePicker.qml</file>
+        <file>qml/MarkerLabel.qml</file>
     </qresource>
 </RCC>

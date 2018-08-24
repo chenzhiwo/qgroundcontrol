@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QGeoCoordinate>
+#include <QStringListModel>
 
 class MapMarker : public QObject
 {
@@ -11,9 +12,11 @@ class MapMarker : public QObject
 public:
     Q_PROPERTY(QDateTime timestamp READ timestamp WRITE setTimestamp NOTIFY timestampChanged)
     Q_PROPERTY(QGeoCoordinate coordinate READ coordinate WRITE setCoordinate NOTIFY coordinateChanged)
+    Q_PROPERTY(QStringListModel* images READ images CONSTANT)
 
     MapMarker(QObject *parent=nullptr)
-        :QObject(parent)
+        :QObject(parent),
+          _images(this)
     {
     }
 
@@ -27,6 +30,11 @@ public:
     QGeoCoordinate coordinate(void) const
     {
         return _coordinate;
+    }
+
+    QStringListModel* images(void)
+    {
+        return &_images;
     }
 
     void setTimestamp(QDateTime timestamp)
@@ -49,9 +57,16 @@ public:
         emit coordinateChanged();
     }
 
+    Q_INVOKABLE void addImage(const QString &name)
+    {
+        _images.insertRow(_images.rowCount());
+        _images.setData(_images.index(_images.rowCount() - 1), name);
+    }
+
 private:
     QDateTime _timestamp;
     QGeoCoordinate _coordinate;
+    QStringListModel _images;
 
 signals:
     void timestampChanged();

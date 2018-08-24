@@ -49,30 +49,28 @@ bool MapMarkerManager::loadXML(const QString &file)
     _markers.clearAndDeleteContents();
 
     // Load from XML
-    for(QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling())
+    for(QDomElement m = root.firstChildElement("marker"); !m.isNull(); m = m.nextSiblingElement("marker"))
     {
-        if(node.isElement())
+        MapMarker *marker = new MapMarker(this);
+        marker->setTimestamp(
+                    QDateTime::fromString(
+                        m.attribute("timestamp"),
+                        "yyyy-MM-ddThh:mm:ss.zzz"
+                        )
+                    );
+        marker->setCoordinate(
+                    QGeoCoordinate(m.attribute("latitude").toDouble(),
+                                   m.attribute("longitude").toDouble(),
+                                   m.attribute("altitude").toDouble()
+                                   )
+                    );
+
+        for(QDomElement i = m.firstChildElement("image"); !i.isNull(); i = i.nextSiblingElement("image"))
         {
-            QDomElement e = node.toElement();
-            if(e.tagName() != "marker")
-            {
-                continue;
-            }
-            MapMarker *marker = new MapMarker(this);
-            marker->setTimestamp(
-                        QDateTime::fromString(
-                            e.attribute("timestamp"),
-                            "yyyy-MM-ddThh:mm:ss.zzz"
-                            )
-                        );
-            marker->setCoordinate(
-                        QGeoCoordinate(e.attribute("latitude").toDouble(),
-                                       e.attribute("longitude").toDouble(),
-                                       e.attribute("altitude").toDouble()
-                                       )
-                        );
-            _markers.append(marker);
+            marker->addImage(i.text());
         }
+
+        _markers.append(marker);
     }
 
     return true;
@@ -108,13 +106,22 @@ bool MapMarkerManager::saveXML(const QString &file)
         MapMarker *marker = qobject_cast<MapMarker*>(_markers[i]);
 
         // Add marker
-        QDomElement e = dom.createElement("marker");
-        e.setAttribute("timestamp", marker->timestamp().toString("yyyy-MM-ddThh:mm:ss.zzz"));
-        e.setAttribute("latitude", marker->coordinate().latitude());
-        e.setAttribute("longitude", marker->coordinate().longitude());
-        e.setAttribute("altitude", marker->coordinate().altitude());
+        QDomElement m = dom.createElement("marker");
+        m.setAttribute("timestamp", marker->timestamp().toString("yyyy-MM-ddThh:mm:ss.zzz"));
+        m.setAttribute("latitude", marker->coordinate().latitude());
+        m.setAttribute("longitude", marker->coordinate().longitude());
+        m.setAttribute("altitude", marker->coordinate().altitude());
 
-        root.appendChild(e);
+        // Append images
+        for(int j = 0; j < marker->images()->rowCount(); j++)
+        {
+            QString image = marker->images()->data(marker->images()->index(j)).toString();
+            QDomElement e = dom.createElement("image");
+            e.appendChild(dom.createTextNode(image));
+            m.appendChild(e);
+        }
+
+        root.appendChild(m);
     }
 
     QTextStream s(&f);
