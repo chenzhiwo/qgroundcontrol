@@ -1,3 +1,5 @@
+QT += multimedia
+
 DEFINES += \
     QGC_APPLICATION_NAME=\"\\\"$${QGC_APP_NAME}\\\"\" \
     QGC_ORG_NAME=\"\\\"$${QGC_ORG_NAME}\\\"\" \
@@ -6,12 +8,20 @@ DEFINES += \
     CUSTOMHEADER=\"\\\"CorePlugin.h\\\"\"
 
 INCLUDEPATH += \
-    $$PWD
+    $$PWD \
+    $$(OPENCV_INCLUDEPATH)
+
+LIBS += \
+    -L$$(OPENCV_LIBPATH) \
+    -lopencv_core3 \
+    -lopencv_imgproc3 \
+    -lopencv_videoio3
 
 HEADERS += \
     $$PWD/CorePlugin.h \
     $$PWD/MapMarkerManager.h \
-    $$PWD/MapMarker.h
+    $$PWD/MapMarker.h \
+    $$PWD/VideoCapture.h
 
 SOURCES += \
     $$PWD/CorePlugin.cc \
