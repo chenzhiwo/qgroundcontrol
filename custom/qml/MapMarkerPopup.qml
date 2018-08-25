@@ -150,6 +150,11 @@ Popup {
                 label: "ALT"
                 value: marker.coordinate.altitude
             }
+
+            MarkerLabel {
+                label: "HED"
+                value: marker.heading
+            }
         }
 
         ColumnLayout {
@@ -159,7 +164,16 @@ Popup {
             spacing: ScreenTools.defaultFontPixelWidth
 
             QGCButton {
-                text: qsTr("+")
+                text: qsTr("Close")
+                Layout.fillWidth: true
+
+                onClicked: {
+                    popup.close()
+                }
+            }
+
+            QGCButton {
+                text: qsTr("Image")
                 Layout.fillWidth: true
 
                 QGCFileDialog {
@@ -207,15 +221,6 @@ Popup {
                 onClicked: {
                     popup.close()
                     markerManager.remove(marker)
-                }
-            }
-
-            QGCButton {
-                text: qsTr("Close")
-                Layout.fillWidth: true
-
-                onClicked: {
-                    popup.close()
                 }
             }
 

@@ -64,6 +64,7 @@ bool MapMarkerManager::loadXML(const QString &file)
                                    m.attribute("altitude").toDouble()
                                    )
                     );
+        marker->setHeading(m.attribute("heading").toDouble());
 
         for(QDomElement i = m.firstChildElement("image"); !i.isNull(); i = i.nextSiblingElement("image"))
         {
@@ -111,6 +112,7 @@ bool MapMarkerManager::saveXML(const QString &file)
         m.setAttribute("latitude", marker->coordinate().latitude());
         m.setAttribute("longitude", marker->coordinate().longitude());
         m.setAttribute("altitude", marker->coordinate().altitude());
+        m.setAttribute("heading", marker->heading());
 
         // Append images
         for(int j = 0; j < marker->images()->rowCount(); j++)

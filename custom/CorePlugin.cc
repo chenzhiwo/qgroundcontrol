@@ -5,12 +5,15 @@
 
 #include "QmlComponentInfo.h"
 
+#include "VideoCapture.h"
+
 CorePlugin::CorePlugin(QGCApplication* app, QGCToolbox* toolbox)
     :QGCCorePlugin(app, toolbox),
       _mapMarkerManager(this)
 {
     qmlRegisterType<MapMarker>("QGroundControl.CorePlugin", 1, 0, "MapMarker");
     qmlRegisterType<MapMarkerManager>("QGroundControl.CorePlugin", 1, 0, "MapMarkerManager");
+    qmlRegisterType<VideoCapture>("QGroundControl.CorePlugin", 1, 0, "VideoCapture");
 
     QmlComponentInfo *item = new QmlComponentInfo(
                 "MapMarkerView",

@@ -13,8 +13,10 @@ import QGroundControl.CorePlugin 1.0
 Item {
     anchors.fill: parent
 
-    property string markerFile: QGroundControl.settingsManager.appSettings.savePath.value + "/Markers/markers.xml"
+    property string markerPath: QGroundControl.settingsManager.appSettings.savePath.value + "/Markers"
+    property string markerFile: markerPath + "/markers.xml"
     property MapMarkerManager markerManager: QGroundControl.corePlugin.mapMarkerManager
+    property var activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
     QGCPalette {
         id: qgcPal
@@ -52,18 +54,15 @@ Item {
         Item {
             anchors.fill: parent
 
-            Video {
+            VideoCapture {
+                id: capture
+                source: "file:///home/chenz/desktop/test.avi"
+            }
+
+            VideoOutput {
                 id: video
                 anchors.fill: parent
-                source: "rtsp://127.0.0.1:8554/"
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        video.play()
-                    }
-                }
+                source: capture
             }
 
             ColumnLayout {
@@ -71,6 +70,15 @@ Item {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 spacing: ScreenTools.defaultFontPixelWidth
+
+                QGCButton {
+                    text: qsTr("Close")
+                    Layout.fillWidth: true
+
+                    onClicked: {
+                        popup.close()
+                    }
+                }
 
                 QGCButton {
                     text: qsTr("Add")
@@ -98,11 +106,27 @@ Item {
                 }
 
                 QGCButton {
-                    text: qsTr("Close")
+                    text: qsTr("Capture")
                     Layout.fillWidth: true
 
                     onClicked: {
-                        popup.close()
+                        if(!activeVehicle)
+                        {
+                            return
+                        }
+
+                        video.grabToImage(function(result) {
+                            var date = new Date()
+                            var imageFile = markerPath + "/" + Qt.formatDateTime(date, "yyyy-MM-ddThh:mm:ss:zzz") + ".png"
+                            result.saveToFile(imageFile)
+                            var marker = markerManager.add()
+                            // Set date time to now
+                            marker.timestamp = date
+                            marker.coordinate = activeVehicle.coordinate
+                            marker.heading = activeVehicle.heading.value
+                            marker.addImage(imageFile)
+                        }
+                        )
                     }
                 }
             }

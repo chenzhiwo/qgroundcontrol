@@ -12,6 +12,7 @@ class MapMarker : public QObject
 public:
     Q_PROPERTY(QDateTime timestamp READ timestamp WRITE setTimestamp NOTIFY timestampChanged)
     Q_PROPERTY(QGeoCoordinate coordinate READ coordinate WRITE setCoordinate NOTIFY coordinateChanged)
+    Q_PROPERTY(double heading READ heading WRITE setHeading NOTIFY headingChanged)
     Q_PROPERTY(QStringListModel* images READ images CONSTANT)
 
     MapMarker(QObject *parent=nullptr)
@@ -30,6 +31,11 @@ public:
     QGeoCoordinate coordinate(void) const
     {
         return _coordinate;
+    }
+
+    double heading(void) const
+    {
+        return _heading;
     }
 
     QStringListModel* images(void)
@@ -57,6 +63,12 @@ public:
         emit coordinateChanged();
     }
 
+    void setHeading(double heading)
+    {
+        _heading = heading;
+        emit headingChanged();
+    }
+
     Q_INVOKABLE void addImage(const QString &name)
     {
         _images.insertRow(_images.rowCount());
@@ -66,9 +78,11 @@ public:
 private:
     QDateTime _timestamp;
     QGeoCoordinate _coordinate;
+    double _heading;
     QStringListModel _images;
 
 signals:
     void timestampChanged();
     void coordinateChanged();
+    void headingChanged();
 };
