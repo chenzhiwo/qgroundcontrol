@@ -83,6 +83,11 @@ private slots:
             _capture.release();
         }
 
+        if(_source.toString().isEmpty())
+        {
+            return;
+        }
+
         if(_source.isLocalFile())
         {
             if(!_capture.open(_source.path().toStdString()))

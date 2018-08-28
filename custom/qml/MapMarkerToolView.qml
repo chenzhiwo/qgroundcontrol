@@ -56,7 +56,6 @@ Item {
 
             VideoCapture {
                 id: capture
-                source: "file:///home/chenz/desktop/test.avi"
             }
 
             VideoOutput {
@@ -102,6 +101,24 @@ Item {
                         popup.close()
                         mainWindow.showPlanView()
                         markerManager.plan()
+                    }
+                }
+
+                QGCButton {
+                    text: qsTr("Streaming")
+                    Layout.fillWidth: true
+                    checkable: true
+
+                    onClicked: {
+                        if(checked)
+                        {
+//                            capture.source = "rtsp://admin:admin@192.168.100.109:554/cam1/h264"
+                            capture.source = "file:///home/chenz/desktop/bridge/MOV_0364.MOV"
+                        }
+                        else
+                        {
+                            capture.source = ""
+                        }
                     }
                 }
 
